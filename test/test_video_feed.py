@@ -19,10 +19,12 @@ class TestVideoFeedCV2:
         assert(res[1] == h)
 
     def test_open(self):
+        """ Tests if the device is correctly opened (requires a connected camera) """
         vf = VideoFeedCV2(0)
         assert(vf.device.isOpened())
 
     def test_detach(self):
+        """ Tests if the device is correctly released (requires a connected camera) """
         vf = VideoFeedCV2(0)
         vf.detach_device()
         assert(not vf.device.isOpened())
