@@ -1,3 +1,5 @@
+"""Provides a camera properties class"""
+
 class CameraProperties:
     """ 
     A class that holds the camera property information. 
