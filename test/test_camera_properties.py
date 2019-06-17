@@ -23,13 +23,13 @@ def test_camera_constructor():
 
     This test should be done to see whether the constructor still functions as it should.
     """
-    #First part of the test
+    # First part of the test
     camera1 = CameraProperties()
     assert camera1.focal_length is None
     assert camera1.sensor_height is None
     assert camera1.is_pycam is False
 
-    #Second part of the test
+    # Second part of the test
     camera2 = CameraProperties(4, 6, True)
     assert camera2.focal_length is 4
     assert camera2.sensor_height is 6
