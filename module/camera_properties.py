@@ -58,7 +58,7 @@ class CameraProperties:
 
     def get_is_pycam(self):
         """
-        Gets the sensor height
+        Gets the is_pycam value
         :return: Returns a boolean whether the camera is a PyCAM
         """
         return self.is_pycam
