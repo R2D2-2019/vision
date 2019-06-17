@@ -1,4 +1,3 @@
-"this module is a template"
 from time import sleep
 from sys import platform
 import signal
