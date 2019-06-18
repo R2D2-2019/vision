@@ -1,20 +1,20 @@
-"""Provedes an interface to get qrcodes from an image"""
+"""Provides an interface to get QR codes from an image"""
 
 from pyzbar import pyzbar
 from qr_code import QrCode
 
 
 class QrReader:
-    """ The QrReader class reads the qr codes from a frame"""
+    """ The QrReader class reads the QR codes from a frame"""
 
     def __init__(self):
         """ The contstructor.
-        It creates a list for the qrcodes to be put into.
+        It creates a list for the QR codes to be put into.
         """
         self.codes = list()
 
     def read_qr_codes(self, frame, camera_properties=None):
-        """ Reads the qrcodes in the frame.
+        """ Reads the QR codes in the frame.
         :param frame: The image from which the qrcodes must be read.
         :param camera_properties: The properties of the camera.  
         :return: Nothing.

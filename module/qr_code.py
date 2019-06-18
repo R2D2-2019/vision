@@ -1,8 +1,8 @@
-""" Provides a class in which to save qr code data."""
+""" Provides a class in which to save QR code data."""
 
 
 class QrCode:
-    """ This class is used to store qr code data and do some simple calculations."""
+    """ This class is used to store QR code data and do some simple calculations."""
 
     def __init__(self, code):
         """ The constructor.
@@ -16,9 +16,9 @@ class QrCode:
         self.parse_data(code.data.decode("utf-8"))
 
     def calculate_distance(self, camera_properties, frame_height):
-        """ Calculate the distance between the qrcode and the camera.
+        """ Calculate the distance between the QR code and the camera.
         :param camera_properties: Properties of the camera used in making the frame/picture.
-        :param frame_height: Height of the frame/picture in which the qrcode is found.
+        :param frame_height: Height of the frame/picture in which the QR code is found.
         :return: Nothing.
         """
         try:
@@ -33,9 +33,9 @@ class QrCode:
             self.distance = None
 
     def get_height(self):
-        """ Gets height measurement of the qr code.
-        This height value is stored inside of the qr code itself.
-        :return: Qr code height.
+        """ Gets height measurement of the QR code.
+        This height value is stored inside of the QR code itself.
+        :return: QR code height.
         """
         try:
             return int(self.data["Height"])
@@ -43,7 +43,7 @@ class QrCode:
             return None
 
     def parse_data(self, unrefined_data):
-        """ Parses the data of the qr code
+        """ Parses the data of the QR code
         :param unrefined_data: A string of data to parse.
         :return: Nothing.
         """
