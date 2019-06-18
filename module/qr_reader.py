@@ -1,7 +1,7 @@
 """Provides an interface to get QR codes from an image"""
 
 from pyzbar import pyzbar
-from qr_code import QrCode
+from modules.vision.module.qr_code import QrCode
 
 
 class QrReader:
@@ -19,6 +19,7 @@ class QrReader:
         :param camera_properties: The properties of the camera.  
         :return: Nothing.
         """
+        self.codes = list()
         codes = pyzbar.decode(frame)
         # Create the qrcodes
         for code in codes:
