@@ -13,6 +13,8 @@ class QrCode:
         self.rect = code.rect
         self.polygon = code.polygon
         self.distance = None
+        self.center_offset = list()
+
         self.parse_data(code.data.decode("utf-8"))
 
     def calculate_distance(self, camera_properties, frame_height):
@@ -31,6 +33,41 @@ class QrCode:
         # Else the program will crash.
         except ZeroDivisionError:
             self.distance = None
+
+    def calculate_center_offset(self, frame_width, frame_height):
+        """ Calculates the offset of the QR code relative to the center of the frame/image.
+        :param frame_width: Width of the frame/image.
+        :param frame_height: Height of the frame/image.
+        :return: Nothing.
+        """
+        qr_center = self.get_qr_center()
+        offset_x, offset_y, = qr_center[0] - \
+            frame_width/2, qr_center[1] - frame_height/2
+        self.center_offset = [offset_x, offset_y]
+
+    def get_qr_center(self):
+        """ Gets the center coordinates of the QR code.
+        :return: QR center coordiantes.
+        """
+        (x, y, w, h) = self.rect
+        center_x, center_y = x+(w/2), y+(h/2)
+        return [center_x, center_y]
+
+    def get_center_offset(self):
+        """ Gets the offset of the center of the QR code relative of the center of the image.
+        :return: Center offset.
+        """
+        if self.center_offset:
+            return self.center_offset
+        return None
+
+    def get_distance(self):
+        """ Gets the distance of the QR code relative to the camera sensor.
+        :return: Distance to camera censor in mm.
+        """
+        if self.distance:
+            return self.distance
+        return None
 
     def get_height(self):
         """ Gets height measurement of the QR code.

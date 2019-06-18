@@ -20,17 +20,18 @@ class QrReader:
         :return: Nothing.
         """
         codes = pyzbar.decode(frame)
-
         # Create the qrcodes
         for code in codes:
-            self.codes.append(QrCode(code))
+            new_code = QrCode(code)
+            new_code.calculate_center_offset(frame.shape[1], frame.shape[0])
+            self.codes.append(new_code)
         # Calculate distance if possible
         if camera_properties:
             for code in self.codes:
                 code.calculate_distance(camera_properties, frame.shape[0])
 
     def get_qr_codes(self):
-        """ Gets the qrdoes found in the frame.
+        """ Gets the QR codes found in the frame.
         :return: Returns a list of found qr codes.
         """
         if self.codes:
