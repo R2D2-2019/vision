@@ -24,8 +24,8 @@ class QrCode:
         :return: Nothing.
         """
         try:
-            distance_to_object = (camera_properties.get_focal_length() * self.get_height(
-            ) * frame_height) / (self.rect.height * camera_properties.get_sensor_height())
+            distance_to_object = (camera_properties.get_focal_length() * int(self.get_value("Height"))
+                                  * frame_height) / (self.rect.height * camera_properties.get_sensor_height())
             self.distance = distance_to_object
         # Sometimes something goes wrong in calculating the distance
         # resulting in an ZeroDivisionError.
@@ -69,15 +69,14 @@ class QrCode:
             return self.distance
         return None
 
-    def get_height(self):
-        """ Gets height measurement of the QR code.
-        This height value is stored inside of the QR code itself.
-        :return: QR code height.
+    def get_value(self, key):
+        """ Gets the desired value from the data dictionary.
+        :param key: The key to look for. 
+        :return: Data value or None if key was not found.
         """
-        try:
-            return int(self.data["Height"])
-        except ValueError:
-            return None
+        if key in self.data:
+            return self.data[key]
+        return None
 
     def parse_data(self, unrefined_data):
         """ Parses the data of the QR code
