@@ -14,6 +14,7 @@ class QrCode:
         self.polygon = code.polygon
         self.distance = None
         self.center_offset = list()
+        self.center_offset_mm = list()
 
         self.parse_data(code.data.decode("utf-8"))
 
@@ -45,6 +46,14 @@ class QrCode:
             frame_width/2, qr_center[1] - frame_height/2
         self.center_offset = [offset_x, offset_y]
 
+        # if possible calculate the physical offset in millimeters
+        try:
+            offset_x_mm = (self.get_value("Height") * offset_x) / self.rect.width
+            offset_y_mm = (self.get_value("Width") * offset_y) / self.rect.height
+            self.center_offset_mm = [offset_x_mm, offset_y_mm]
+        except TypeError:
+            pass
+
     def get_qr_center(self):
         """ Gets the center coordinates of the QR code.
         :return: QR center coordiantes.
@@ -59,6 +68,14 @@ class QrCode:
         """
         if self.center_offset:
             return self.center_offset
+        return None
+
+    def get_center_offset_mm(self):
+        """ Gets the offset of the center of the QR code relative of the center of the image in millimeters.
+        :return: Center offset in millimeters.
+        """
+        if self.center_offset_mm:
+            return self.center_offset_mm
         return None
 
     def get_distance(self):
