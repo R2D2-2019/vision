@@ -20,6 +20,14 @@ class Vision:
     See class/activity diagrams for more.  """
 
     def __init__(self, comm: BaseComm, video_feed, qr_reader, camera_properties):
+        """ 
+        Vision class constructor. 
+        Provides the class with everything it needs to get and process QR codes. 
+        :param comm: communication CAN bus
+        :param video_feed: The video feed for getting video frames.
+        :param qr_reader: The QR reader class we created.
+        :param camera_properties: Our camera properties class for calculating the distance.
+        """
         self.comm = comm
         self.video_feed = video_feed
         self.qr_reader = qr_reader
