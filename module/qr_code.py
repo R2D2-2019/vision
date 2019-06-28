@@ -31,7 +31,7 @@ class QrCode:
         # resulting in an ZeroDivisionError.
         # If this is the case nothing should happen.
         # Else the program will crash.
-        except ZeroDivisionError:
+        except:
             self.distance = None
 
     def calculate_center_offset(self, frame_width, frame_height):
