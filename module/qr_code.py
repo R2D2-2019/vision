@@ -183,7 +183,7 @@ class QrCode:
         """
         try:
             distance_to_object = (camera_properties.get_focal_length() * int(self.get_value("Height"))
-                                  * frame_height) / (self.polygon.height * camera_properties.get_sensor_height())
+                                  * frame_height) / (self.polygon.middle_height * camera_properties.get_sensor_height())
             self.center_distance = distance_to_object
         # Sometimes something goes wrong in calculating the distance
         # resulting in an ZeroDivisionError.
@@ -205,9 +205,9 @@ class QrCode:
         # if possible calculate the physical offset in millimeters
         try:
             offset_x_mm = (self.get_value("Height") *
-                           offset_x) / self.polygon.width
+                           offset_x) / self.polygon.middle_width
             offset_y_mm = (self.get_value("Width") *
-                           offset_y) / self.polygon.height
+                           offset_y) / self.polygon.middle_height
             self.center_offset_mm = [offset_x_mm, offset_y_mm]
         except TypeError:
             pass
