@@ -21,6 +21,12 @@ class Coordinate:
         """
         return "{}, {}".format(repr(self.x), repr(self.y))
 
+    def __eq__(self, other):
+        """Override the default equals operator"""
+        if isinstance(other, self.__class__):
+            return self.x == other.x and self.y == other.y
+        return False
+
 
 class Line:
     """ This class is used to represent two points of a line. """
@@ -39,6 +45,12 @@ class Line:
         :return: Returns a string with the two coordinates.
         """
         return "{}, {}".format(repr(self.p1), repr(self.p2))
+
+    def __eq__(self, other):
+        """Override the default equals operator"""
+        if isinstance(other, self.__class__):
+            return self.p1 == other.p1 and self.p2 == other.p2
+        return False
 
 
 class QrPolygon:
