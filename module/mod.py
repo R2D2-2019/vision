@@ -47,11 +47,8 @@ class Vision:
             for code in codes:
                 center = code.get_center_offset()
                 frame = FrameQrcodeData()
-                s = bytes(code.get_value("Data"), 'utf-8')
-                data = struct.pack("{}s".format(len(s)), s)
-                u = struct.unpack('{}s'.format(len(data)), data)
-                
-                frame.set_data(code.get_value("Data"), int(code.get_value("Width")), int(code.get_value("Height")), int(center[0]), int(center[1]), int(code.get_distance()))
+                byte_string = bytes(code.get_value("Data"), 'utf-8')
+                frame.set_data(byte_string, int(code.get_value("Width")), int(code.get_value("Height")), int(center[0]), int(center[1]), int(code.get_distance()))
                 frames.append(frame)
 
         if 1:  # TODO: this 'if' should trigger on data request
