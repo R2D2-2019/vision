@@ -2,9 +2,11 @@
 
 from math import sqrt
 
+
 class Coordinate:
     """ This class is used to represent x and y values of a coordiante. """
-    def __init__(self, x = 0, y = 0):
+
+    def __init__(self, x=0, y=0):
         """ The constructor.
         :param x: X value of the coordiante. 
         :param y: Y value of the coordiante.
@@ -19,9 +21,11 @@ class Coordinate:
         """
         return "{}, {}".format(repr(self.x), repr(self.y))
 
+
 class Line:
     """ This class is used to represent two points of a line. """
-    def __init__(self, p1 = Coordinate(), p2 = Coordinate()):
+
+    def __init__(self, p1=Coordinate(), p2=Coordinate()):
         """ The constructor.
         :param p1: First coordinate of the line. Default = empty coordinate. 
         :param p2: Second coordinate of the line. Default = empty coordinate.
@@ -39,6 +43,7 @@ class Line:
 
 class QrPolygon:
     """ This class extends the information one gets from the pyzbar polygon."""
+
     def __init__(self, polygon):
         """ The constructor.
 
@@ -51,11 +56,14 @@ class QrPolygon:
         self.bottom_right_point = polygon[2]
         self.top_right_point = polygon[3]
 
-        self.diagonal_tl_br_line = Line(self.top_left_point, self.bottom_right_point)
-        self.diagonal_tr_bl_line = Line(self.top_right_point, self.bottom_left_point)
+        self.diagonal_tl_br_line = Line(
+            self.top_left_point, self.bottom_right_point)
+        self.diagonal_tr_bl_line = Line(
+            self.top_right_point, self.bottom_left_point)
 
         self.top_line = Line(self.top_left_point, self.top_right_point)
-        self.bottom_line = Line(self.bottom_left_point, self.bottom_right_point)
+        self.bottom_line = Line(self.bottom_left_point,
+                                self.bottom_right_point)
         self.left_line = Line(self.top_left_point, self.bottom_left_point)
         self.right_line = Line(self.top_right_point, self.bottom_right_point)
 
@@ -77,7 +85,6 @@ class QrPolygon:
 
         self.calculate_polygon_properties()
 
-
     def line_intersection(self, line_1, line_2):
         """ Calculates the intersection coordinate of two lines.
         :param line_1: A line.
@@ -85,8 +92,10 @@ class QrPolygon:
         :return: Coordinate of the intersection point.
         :return: Nothing if no point is found.
         """
-        x_diff = Coordinate(line_1.p1.x - line_1.p2.x, line_2.p1.x - line_2.p2.x)
-        y_diff = Coordinate(line_1.p1.y - line_1.p2.y, line_2.p1.y - line_2.p2.y)
+        x_diff = Coordinate(line_1.p1.x - line_1.p2.x,
+                            line_2.p1.x - line_2.p2.x)
+        y_diff = Coordinate(line_1.p1.y - line_1.p2.y,
+                            line_2.p1.y - line_2.p2.y)
 
         def det(a, b):
             return a.x * b.y - a.y * b.x
@@ -100,7 +109,6 @@ class QrPolygon:
         y = det(d, y_diff) / div
         return Coordinate(x, y)
 
-
     def calculate_polygon_properties(self):
         """ Calculates a lot of polygon properties.
         Calculates the coordinates of the center, the midpoints of the outer boundries, and, if possible, vanish points.
@@ -108,31 +116,46 @@ class QrPolygon:
         CAlculates the height and with of the polygon.
         :return: Nothing.
         """
-        self.center_point = self.line_intersection(self.diagonal_tl_br_line, self.diagonal_tr_bl_line)
+        self.center_point = self.line_intersection(
+            self.diagonal_tl_br_line, self.diagonal_tr_bl_line)
 
-        self.horizontal_vanish_point = self.line_intersection(self.top_line, self.bottom_line)
-        self.vertical_vanish_point = self.line_intersection(self.left_line, self.right_line)
+        self.horizontal_vanish_point = self.line_intersection(
+            self.top_line, self.bottom_line)
+        self.vertical_vanish_point = self.line_intersection(
+            self.left_line, self.right_line)
 
         if self.horizontal_vanish_point:
-            self.horizontal_center_line = Line(self.center_point, self.horizontal_vanish_point)
+            self.horizontal_center_line = Line(
+                self.center_point, self.horizontal_vanish_point)
         else:
-            self.horizontal_center_line = Line(self.center_point, Coordinate(self.center_point.x + 10, self.center_point.y))
+            self.horizontal_center_line = Line(self.center_point, Coordinate(
+                self.center_point.x + 10, self.center_point.y))
 
         if self.vertical_vanish_point:
-            self.vertical_center_line = Line(self.center_point, self.vertical_vanish_point)
+            self.vertical_center_line = Line(
+                self.center_point, self.vertical_vanish_point)
         else:
-            self.vertical_center_line = Line(self.center_point, Coordinate(self.center_point.x, self.center_point.y + 10))
+            self.vertical_center_line = Line(self.center_point, Coordinate(
+                self.center_point.x, self.center_point.y + 10))
 
-        self.upper_middle_point = self.line_intersection(self.vertical_center_line, self.top_line)
-        self.lower_middle_point = self.line_intersection(self.vertical_center_line, self.bottom_line)
-        self.left_middle_point = self.line_intersection(self.horizontal_center_line, self.left_line)
-        self.right_middle_point = self.line_intersection(self.horizontal_center_line, self.right_line)
+        self.upper_middle_point = self.line_intersection(
+            self.vertical_center_line, self.top_line)
+        self.lower_middle_point = self.line_intersection(
+            self.vertical_center_line, self.bottom_line)
+        self.left_middle_point = self.line_intersection(
+            self.horizontal_center_line, self.left_line)
+        self.right_middle_point = self.line_intersection(
+            self.horizontal_center_line, self.right_line)
 
-        self.middle_height_line = Line(self.upper_middle_point, self.lower_middle_point)
-        self.middle_width_line = Line(self.left_middle_point, self.right_middle_point)
+        self.middle_height_line = Line(
+            self.upper_middle_point, self.lower_middle_point)
+        self.middle_width_line = Line(
+            self.left_middle_point, self.right_middle_point)
 
-        self.middle_height = sqrt(((self.middle_height_line.p1.x - self.middle_height_line.p2.x)** 2) + ((self.middle_height_line.p1.y - self.middle_height_line.p2.y)**2))
-        self.middle_width = sqrt(((self.middle_width_line.p1.x - self.middle_width_line.p2.x)** 2) + ((self.middle_width_line.p1.y - self.middle_width_line.p2.y)**2))
+        self.middle_height = sqrt(((self.middle_height_line.p1.x - self.middle_height_line.p2.x) ** 2) + (
+            (self.middle_height_line.p1.y - self.middle_height_line.p2.y) ** 2))
+        self.middle_width = sqrt(((self.middle_width_line.p1.x - self.middle_width_line.p2.x)
+                                  ** 2) + ((self.middle_width_line.p1.y - self.middle_width_line.p2.y) ** 2))
 
 
 class QrCode:
@@ -146,13 +169,13 @@ class QrCode:
         self.type = code.type
         self.rect = code.rect
         self.polygon = QrPolygon(code.polygon)
-        self.distance = None
+        self.center_distance = None
         self.center_offset = list()
         self.center_offset_mm = list()
 
         self.parse_data(code.data.decode("utf-8"))
 
-    def calculate_distance(self, camera_properties, frame_height):
+    def calculate_center_distance(self, camera_properties, frame_height):
         """ Calculate the distance between the QR code and the camera.
         :param camera_properties: Properties of the camera used in making the frame/picture.
         :param frame_height: Height of the frame/picture in which the QR code is found.
@@ -160,14 +183,14 @@ class QrCode:
         """
         try:
             distance_to_object = (camera_properties.get_focal_length() * int(self.get_value("Height"))
-                                  * frame_height) / (self.rect.height * camera_properties.get_sensor_height())
-            self.distance = distance_to_object
+                                  * frame_height) / (self.polygon.height * camera_properties.get_sensor_height())
+            self.center_distance = distance_to_object
         # Sometimes something goes wrong in calculating the distance
         # resulting in an ZeroDivisionError.
         # If this is the case nothing should happen.
         # Else the program will crash.
         except ZeroDivisionError:
-            self.distance = None
+            self.center_distance = None
 
     def calculate_center_offset(self, frame_width, frame_height):
         """ Calculates the offset of the QR code relative to the center of the frame/image.
@@ -175,15 +198,16 @@ class QrCode:
         :param frame_height: Height of the frame/image.
         :return: Nothing.
         """
-        qr_center = self.get_qr_center()
-        offset_x, offset_y, = qr_center[0] - \
-            frame_width/2, qr_center[1] - frame_height/2
+        qr_center = self.polygon.center_point
+        offset_x, offset_y, = qr_center.x - frame_width/2, qr_center.y - frame_height/2
         self.center_offset = [offset_x, offset_y]
 
         # if possible calculate the physical offset in millimeters
         try:
-            offset_x_mm = (self.get_value("Height") * offset_x) / self.rect.width
-            offset_y_mm = (self.get_value("Width") * offset_y) / self.rect.height
+            offset_x_mm = (self.get_value("Height") *
+                           offset_x) / self.polygon.width
+            offset_y_mm = (self.get_value("Width") *
+                           offset_y) / self.polygon.height
             self.center_offset_mm = [offset_x_mm, offset_y_mm]
         except TypeError:
             pass
@@ -192,9 +216,7 @@ class QrCode:
         """ Gets the center coordinates of the QR code.
         :return: QR center coordiantes.
         """
-        (x, y, w, h) = self.rect
-        center_x, center_y = x+(w/2), y+(h/2)
-        return [center_x, center_y]
+        return self.polygon.center_point
 
     def get_center_offset(self):
         """ Gets the offset of the center of the QR code relative of the center of the image.
@@ -212,12 +234,12 @@ class QrCode:
             return self.center_offset_mm
         return None
 
-    def get_distance(self):
+    def get_center_distance(self):
         """ Gets the distance of the QR code relative to the camera sensor.
         :return: Distance to camera censor in mm.
         """
-        if self.distance:
-            return self.distance
+        if self.center_distance:
+            return self.center_distance
         return None
 
     def get_value(self, key):
