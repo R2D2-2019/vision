@@ -19,7 +19,7 @@ class Coordinate:
         """ Represents the coordinate
         :return: Returns a string with the x and y values.
         """
-        return "{}, {}".format(repr(self.x), repr(self.y))
+        return "({}, {})".format(repr(self.x), repr(self.y))
 
     def __eq__(self, other):
         """Override the default equals operator"""
@@ -110,6 +110,10 @@ class QrPolygon:
                             line_2.p1.y - line_2.p2.y)
 
         def det(a, b):
+            # Because this function is only used in this particular function,
+            # the choice was made to nest this det function in the function 
+            # that uses it, instead of making it a private class function and 
+            # to never be used again.
             return a.x * b.y - a.y * b.x
 
         div = det(x_diff, y_diff)
@@ -125,17 +129,26 @@ class QrPolygon:
         """ Calculates a lot of polygon properties.
         Calculates the coordinates of the center, the midpoints of the outer boundries, and, if possible, vanish points.
         Calculates the middle height and width line.
-        CAlculates the height and with of the polygon.
+        Calculates the height and with of the polygon.
         :return: Nothing.
         """
-        self.center_point = self.line_intersection(
-            self.diagonal_tl_br_line, self.diagonal_tr_bl_line)
+        self.__calculate_center_point()
+        self.__calculate_vanishing_points()
+        self.__calculate_vahish_lines()
+        self.__calculate_mid_points()
+        self.__calculate_mid_lines()
+        self.__calculate_middle_height_width()
 
+    def __calculate_center_point(self):
+        self.center_point = self.line_intersection(self.diagonal_tl_br_line, self.diagonal_tr_bl_line)
+
+    def __calculate_vanishing_points(self):
         self.horizontal_vanish_point = self.line_intersection(
             self.top_line, self.bottom_line)
         self.vertical_vanish_point = self.line_intersection(
             self.left_line, self.right_line)
 
+    def __calculate_vahish_lines(self):
         if self.horizontal_vanish_point:
             self.horizontal_center_line = Line(
                 self.center_point, self.horizontal_vanish_point)
@@ -150,6 +163,7 @@ class QrPolygon:
             self.vertical_center_line = Line(self.center_point, Coordinate(
                 self.center_point.x, self.center_point.y + 10))
 
+    def __calculate_mid_points(self):
         self.upper_middle_point = self.line_intersection(
             self.vertical_center_line, self.top_line)
         self.lower_middle_point = self.line_intersection(
@@ -159,16 +173,17 @@ class QrPolygon:
         self.right_middle_point = self.line_intersection(
             self.horizontal_center_line, self.right_line)
 
+    def __calculate_mid_lines(self):
         self.middle_height_line = Line(
             self.upper_middle_point, self.lower_middle_point)
         self.middle_width_line = Line(
             self.left_middle_point, self.right_middle_point)
 
+    def __calculate_middle_height_width(self):
         self.middle_height = sqrt(((self.middle_height_line.p1.x - self.middle_height_line.p2.x) ** 2) + (
             (self.middle_height_line.p1.y - self.middle_height_line.p2.y) ** 2))
         self.middle_width = sqrt(((self.middle_width_line.p1.x - self.middle_width_line.p2.x)
                                   ** 2) + ((self.middle_width_line.p1.y - self.middle_width_line.p2.y) ** 2))
-
 
 class QrCode:
     """ This class is used to store QR code data and do some simple calculations."""
@@ -211,7 +226,8 @@ class QrCode:
         :return: Nothing.
         """
         qr_center = self.polygon.center_point
-        offset_x, offset_y, = qr_center.x - frame_width/2, qr_center.y - frame_height/2
+        offset_x = qr_center.x - frame_width/2
+        offset_y = qr_center.y - frame_height/2
         self.center_offset = [offset_x, offset_y]
 
         # if possible calculate the physical offset in millimeters
