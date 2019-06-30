@@ -20,9 +20,9 @@ class Line:
 class QrPolygon:
     def __init__(self, corner_points):
         self.top_left_point = corner_points[0]
-        self.top_right_point = corner_points[1]
-        self.bottom_left_point = corner_points[2]
-        self.bottom_right_point = corner_points[3]
+        self.bottom_left_point = corner_points[1]
+        self.bottom_right_point = corner_points[2]
+        self.top_right_point = corner_points[3]
 
         self.diagonal_tl_br_line = Line(self.top_left_point, self.bottom_right_point)
         self.diagonal_tr_bl_line = Line(self.top_right_point, self.bottom_left_point)
@@ -98,46 +98,49 @@ class QrPolygon:
 
 
 polygon = QrPolygon([Coordinate(500, 500),
-                     Coordinate(700, 550),
                      Coordinate(500, 700),
-                     Coordinate(700, 650)])  # vanish point right
+                     Coordinate(700, 650),
+                     Coordinate(700, 550)])  # vanish point right
 
 polygon = QrPolygon([Coordinate(500, 550),
-                     Coordinate(700, 500),
                      Coordinate(500, 650),
-                     Coordinate(700, 700)])  # vanish point left
+                     Coordinate(700, 700),
+                     Coordinate(700, 500)])  # vanish point left
 
 polygon = QrPolygon([Coordinate(550, 500),
-                     Coordinate(650, 500),
                      Coordinate(500, 700),
-                     Coordinate(700, 700)])  # vanish point up
+                     Coordinate(700, 700),
+                     Coordinate(650, 500)])  # vanish point up
 
 polygon = QrPolygon([Coordinate(512, 565),
-                     Coordinate(999, 531),
                      Coordinate(782, 867),
-                     Coordinate(1229, 651)])  # vanish point up right
+                     Coordinate(1229, 651),
+                     Coordinate(999, 531)])  # vanish point up right
 
 polygon = QrPolygon([Coordinate(500, 500),
-                     Coordinate(700, 500),
                      Coordinate(500, 700),
-                     Coordinate(700, 700)])  # square
+                     Coordinate(700, 700),
+                     Coordinate(700, 500)])  # square
 
 
 polygon = QrPolygon([Coordinate(500, 500),
-                     Coordinate(700, 500),
                      Coordinate(550, 700),
-                     Coordinate(650, 700)])  # vanish point down
-
-
-import timeit
-loop_amount = 1000
-print("time in s: {}".format(timeit.timeit(polygon.calculate_polygon_properties, number = loop_amount)))
+                     Coordinate(650, 700),
+                     Coordinate(700, 500)])  # vanish point down
 
 
 import cv2
 import numpy as np
+from pyzbar import pyzbar
 
-frame = np.zeros((1080, 1920, 3), np.uint8)
+frame = cv2.imread("opencv_frame.png")
+codes = pyzbar.decode(frame)
+for code in codes:
+    polygon = QrPolygon(code.polygon)
+    print(code.polygon)
+
+print(polygon.middle_height_line)
+
 while True:
     cv2.imshow("preview", frame)
 
