@@ -3,6 +3,7 @@ Tests for the camera_properties class
 """
 from modules.vision.module.camera_properties import CameraProperties
 
+
 def test_camera_constructor():
     """
     This function tests the constructor of CameraProperties
