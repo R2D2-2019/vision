@@ -18,7 +18,7 @@ class Demo:
         """
         Constructor, doesn't take any parameters.
         """
-        self.vf = VideoFeedCV2(2)
+        self.vf = VideoFeedCV2(0)
         self.qr = QrReader()
         self.cp = CameraProperties(4.3, 4.2)
         self.codes_seen = dict()
@@ -32,7 +32,6 @@ class Demo:
         :return: void
         """
         res = self.vf.get_resolution()
-        print(res)
         cv2.putText(frame, "score: {}".format(self.score), (20, res[1]-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 6)
         cv2.putText(frame, "score: {}".format(self.score), (20, res[1]-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
@@ -65,8 +64,8 @@ class Demo:
         code_width = code.polygon.middle_width / (res[0]/2)
         pts = np.array([[code.polygon.top_left_point.x, code.polygon.top_left_point.y], [code.polygon.bottom_left_point.x, code.polygon.bottom_left_point.y], [code.polygon.bottom_right_point.x, code.polygon.bottom_right_point.y], [code.polygon.top_right_point.x, code.polygon.top_right_point.y]])
         
-        cv2.polylines(frame,[pts],True,(0,255,255))
-        cv2.putText(frame, message, (code.polygon.top_left_point.x , code.polygon.top_left_point.y-10), cv2.FONT_HERSHEY_SIMPLEX, code_width, (255,0,0), 2)
+        cv2.polylines(frame,[pts],True,(0,0,255), 2)
+        cv2.putText(frame, message, (code.polygon.top_left_point.x , code.polygon.top_left_point.y-10), cv2.FONT_HERSHEY_SIMPLEX, code_width, (0,0,255), 2)
 
     def run(self):
         """
