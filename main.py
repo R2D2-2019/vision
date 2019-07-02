@@ -3,7 +3,11 @@ from sys import platform
 import signal
 
 from client.comm import Comm
-from modules.template.module.mod import Module
+from modules.vision.module.mod import Vision
+
+from modules.vision.module.video_feed import VideoFeedCV2
+from modules.vision.module.camera_properties import CameraProperties
+from modules.vision.module.qr_reader import QrReader
 
 SHOULD_STOP = False
 
@@ -11,14 +15,15 @@ SHOULD_STOP = False
 def main():
 
     print("Starting application...\n")
-    module = Module(Comm())
+    vision = Vision(Comm(), VideoFeedCV2(0), QrReader(),
+                    CameraProperties(4.3, 4.2))
     print("Module created...")
 
     while not SHOULD_STOP:
-        module.process()
+        vision.process()
         sleep(0.05)
 
-    module.stop()
+    vision.stop()
 
 
 def stop(signal, frame):
