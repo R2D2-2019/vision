@@ -29,7 +29,7 @@ class QrReader:
         # Calculate distance if possible
         if camera_properties:
             for code in self.codes:
-                code.calculate_distance(camera_properties, frame.shape[0])
+                code.calculate_center_distance(camera_properties, frame.shape[0])
 
     def get_qr_codes(self):
         """ Gets the QR codes found in the frame.
