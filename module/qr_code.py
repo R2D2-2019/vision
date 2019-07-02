@@ -63,10 +63,10 @@ class QrPolygon:
         :param polygon: Either a pyzbar polygon from a qr code, or a list with four coordinates.
         :return: Nothing.
         """
-        self.top_left_point = polygon[0]
-        self.bottom_left_point = polygon[1]
-        self.bottom_right_point = polygon[2]
-        self.top_right_point = polygon[3]
+        self.top_left_point = Coordinate(polygon[0].x, polygon[0].y)
+        self.bottom_left_point = Coordinate(polygon[1].x, polygon[1].y)
+        self.bottom_right_point = Coordinate(polygon[2].x, polygon[2].y)
+        self.top_right_point = Coordinate(polygon[3].x, polygon[3].y)
 
         self.diagonal_tl_br_line = Line(
             self.top_left_point, self.bottom_right_point)
@@ -232,9 +232,9 @@ class QrCode:
 
         # if possible calculate the physical offset in millimeters
         try:
-            offset_x_mm = (self.get_value("Height") *
+            offset_x_mm = (int(self.get_value("Height")) *
                            offset_x) / self.polygon.middle_width
-            offset_y_mm = (self.get_value("Width") *
+            offset_y_mm = (int(self.get_value("Width")) *
                            offset_y) / self.polygon.middle_height
             self.center_offset_mm = [offset_x_mm, offset_y_mm]
         except TypeError:
