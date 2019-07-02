@@ -3,6 +3,7 @@ This file consists of the demo for the Vision module.
 """
 from time import sleep
 import keyboard as kb
+import numpy as np
 import cv2
 
 from modules.vision.module.video_feed import VideoFeedCV2
@@ -17,11 +18,12 @@ class Demo:
         """
         Constructor, doesn't take any parameters.
         """
-        self.vf = VideoFeedCV2(0)
+        self.vf = VideoFeedCV2(2)
         self.qr = QrReader()
         self.cp = CameraProperties(4.3, 4.2)
         self.codes_seen = dict()
         self.score = 0
+        self.qr_codes = {"ID_0": "Do a barrel roll", "ID_1": "Do the Harlem shake", "ID_2": "Jump", "ID_3": "Sing the national anthem", "ID_4": "Take a nap", "ID_5": "Get something to drink", "ID_6": "Sponsored by Coca Cola", "ID_7": "Sponsored by Pepsi", "ID_8": "Go to skillshare.com/R2D2 for a free coupon", "ID_9": "Head, shoulder knees and toes", "ID_10": "Bush did 9/11"}
 
     def render_score(self, frame):
         """
@@ -30,6 +32,8 @@ class Demo:
         :return: void
         """
         res = self.vf.get_resolution()
+        print(res)
+        cv2.putText(frame, "score: {}".format(self.score), (20, res[1]-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 6)
         cv2.putText(frame, "score: {}".format(self.score), (20, res[1]-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
     def add_code(self, code):
@@ -39,6 +43,7 @@ class Demo:
         :return: void
         """
         message = code.get_value("Data")
+
         if message not in self.codes_seen:
             self.codes_seen[message] = code
             self.score += 1
@@ -51,12 +56,17 @@ class Demo:
         :return: void
         """
         message = code.get_value("Data")
-        (x, y, w, h) = code.rect
+
+        if message in self.qr_codes:
+            message = self.qr_codes[message]
+
         distance = code.get_center_distance()
         res = self.vf.get_resolution()
         code_width = code.polygon.middle_width / (res[0]/2)
-        cv2.rectangle(frame, (x,y), (x+w, y+h), (255,0,0), 2)
-        cv2.putText(frame, message, (x , y-10), cv2.FONT_HERSHEY_SIMPLEX, code_width, (255,0,0), 2)
+        pts = np.array([[code.polygon.top_left_point.x, code.polygon.top_left_point.y], [code.polygon.bottom_left_point.x, code.polygon.bottom_left_point.y], [code.polygon.bottom_right_point.x, code.polygon.bottom_right_point.y], [code.polygon.top_right_point.x, code.polygon.top_right_point.y]])
+        
+        cv2.polylines(frame,[pts],True,(0,255,255))
+        cv2.putText(frame, message, (code.polygon.top_left_point.x , code.polygon.top_left_point.y-10), cv2.FONT_HERSHEY_SIMPLEX, code_width, (255,0,0), 2)
 
     def run(self):
         """

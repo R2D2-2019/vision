@@ -63,10 +63,10 @@ class QrPolygon:
         :param polygon: Either a pyzbar polygon from a qr code, or a list with four coordinates.
         :return: Nothing.
         """
-        self.top_left_point = polygon[0]
-        self.bottom_left_point = polygon[1]
-        self.bottom_right_point = polygon[2]
-        self.top_right_point = polygon[3]
+        self.top_left_point = Coordinate(polygon[0].x, polygon[0].y)
+        self.bottom_left_point = Coordinate(polygon[1].x, polygon[1].y)
+        self.bottom_right_point = Coordinate(polygon[2].x, polygon[2].y)
+        self.top_right_point = Coordinate(polygon[3].x, polygon[3].y)
 
         self.diagonal_tl_br_line = Line(
             self.top_left_point, self.bottom_right_point)
@@ -89,8 +89,8 @@ class QrPolygon:
         self.middle_height = 0
         self.middle_width = 0
 
-        self.horizontal_vanish_point = Coordinate()
-        self.vertical_vanish_point = Coordinate()
+        self.horizontal_vanish_point = None
+        self.vertical_vanish_point = None
 
         self.horizontal_center_line = Line()
         self.vertical_center_line = Line()
@@ -111,8 +111,8 @@ class QrPolygon:
 
         def det(a, b):
             # Because this function is only used in this particular function,
-            # the choice was made to nest this det function in the function 
-            # that uses it, instead of making it a private class function and 
+            # the choice was made to nest this det function in the function
+            # that uses it, instead of making it a private class function and
             # to never be used again.
             return a.x * b.y - a.y * b.x
 
@@ -140,7 +140,8 @@ class QrPolygon:
         self.__calculate_middle_height_width()
 
     def __calculate_center_point(self):
-        self.center_point = self.line_intersection(self.diagonal_tl_br_line, self.diagonal_tr_bl_line)
+        self.center_point = self.line_intersection(
+            self.diagonal_tl_br_line, self.diagonal_tr_bl_line)
 
     def __calculate_vanishing_points(self):
         self.horizontal_vanish_point = self.line_intersection(
@@ -180,10 +181,14 @@ class QrPolygon:
             self.left_middle_point, self.right_middle_point)
 
     def __calculate_middle_height_width(self):
-        self.middle_height = sqrt(((self.middle_height_line.p1.x - self.middle_height_line.p2.x) ** 2) + (
-            (self.middle_height_line.p1.y - self.middle_height_line.p2.y) ** 2))
-        self.middle_width = sqrt(((self.middle_width_line.p1.x - self.middle_width_line.p2.x)
-                                  ** 2) + ((self.middle_width_line.p1.y - self.middle_width_line.p2.y) ** 2))
+        try:
+            self.middle_height = sqrt(((self.middle_height_line.p1.x - self.middle_height_line.p2.x) ** 2) + (
+                (self.middle_height_line.p1.y - self.middle_height_line.p2.y) ** 2))
+            self.middle_width = sqrt(((self.middle_width_line.p1.x - self.middle_width_line.p2.x)
+                                      ** 2) + ((self.middle_width_line.p1.y - self.middle_width_line.p2.y) ** 2))
+        except AttributeError:
+            pass
+
 
 class QrCode:
     """ This class is used to store QR code data and do some simple calculations."""
