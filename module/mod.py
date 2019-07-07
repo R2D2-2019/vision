@@ -3,9 +3,6 @@ from client.comm import BaseComm
 from common.frame_enum import FrameType
 from common.frames import FrameQrcodeData
 
-import struct
-
-# TODO: make a PR for this frame type
 
 class Vision:
     """ This is the main module class used for every step in the process. 
@@ -34,8 +31,6 @@ class Vision:
         """ Use this function to attach a new QR reader. """
         self.qr_reader = new_reader
 
-
-
     def process(self):
         """ The process function that's provided by the template. This generates QR
         codes from a video frame and puts them on the bus by request. """
@@ -55,9 +50,10 @@ class Vision:
                         center = code.get_center_offset()
                         frame = FrameQrcodeData()
                         byte_string = bytes(code.get_value("Data"), 'utf-8')
-                        frame.set_data(byte_string, int(code.get_value("Width")), int(code.get_value("Height")), int(center[0]), int(center[1]), int(code.get_distance()))
+                        frame.set_data(byte_string, int(code.get_value("Width")), int(code.get_value(
+                            "Height")), int(center[0]), int(center[1]), int(code.get_distance()))
                         self.comm.send(frame)
-                
+
                 # send off the frames
                 for frame in frames:
                     self.comm.send(frame)
