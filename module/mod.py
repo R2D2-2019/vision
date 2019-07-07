@@ -34,32 +34,33 @@ class Vision:
         """ Use this function to attach a new QR reader. """
         self.qr_reader = new_reader
 
+
+
     def process(self):
         """ The process function that's provided by the template. This generates QR
         codes from a video frame and puts them on the bus by request. """
-
-        video_frame = self.video_feed.get_frame()
-        self.qr_reader.read_qr_codes(video_frame, self.cp)
-
-        frames = list()
-        codes = self.qr_reader.get_qr_codes()
-        if codes:
-            for code in codes:
-                center = code.get_center_offset()
-                frame = FrameQrcodeData()
-                byte_string = bytes(code.get_value("Data"), 'utf-8')
-                frame.set_data(byte_string, int(code.get_value("Width")), int(code.get_value("Height")), int(center[0]), int(center[1]), int(code.get_distance()))
-                frames.append(frame)
-
-        if 1:  # TODO: this 'if' should trigger on data request
-            for frame in frames:
-                data = frame.get_data()
-                print("message {} width {} height {} offsetx {} offsety {} distance {}".format(
-                    data[0].decode(), data[1], data[2], data[3], data[4], data[5]))
-                self.comm.send(frame)
-
         while self.comm.has_data():
-            print(self.comm.get_data())
+            frame = self.comm.get_data()
+
+            # if its a request we process the current video feed frame
+            if frame.request:
+                video_frame = self.video_feed.get_frame()
+                self.qr_reader.read_qr_codes(video_frame, self.cp)
+                frames = list()
+                codes = self.qr_reader.get_qr_codes()
+
+                # if we found codes we make a frame based on the code and add it to the list to send off
+                if codes:
+                    for code in codes:
+                        center = code.get_center_offset()
+                        frame = FrameQrcodeData()
+                        byte_string = bytes(code.get_value("Data"), 'utf-8')
+                        frame.set_data(byte_string, int(code.get_value("Width")), int(code.get_value("Height")), int(center[0]), int(center[1]), int(code.get_distance()))
+                        self.comm.send(frame)
+                
+                # send off the frames
+                for frame in frames:
+                    self.comm.send(frame)
 
     def stop(self):
         """ Stop function provided by the template. """
