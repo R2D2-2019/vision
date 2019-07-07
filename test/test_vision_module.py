@@ -58,4 +58,3 @@ class TestVisionModule:
         module.comm.stop()
 
         assert data[1:] == FRAME_TUPLE[1:]
-        print(data, FRAME_TUPLE)
